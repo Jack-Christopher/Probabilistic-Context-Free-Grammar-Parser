@@ -7,6 +7,9 @@
 
 int main()
 {
+    Grammar g;
+    g.readGrammarFromTXT("grammar2.txt");
+    g.print();
     
-    return;
+    return 0;
 }
