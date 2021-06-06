@@ -4,12 +4,17 @@
 #include "token.h"
 #include "production.h"
 #include "grammar.h"
+#include "chart.h"
+#include "earleyParser.h"
 
 int main()
 {
-    Grammar g;
-    g.readGrammarFromTXT("grammar2.txt");
-    g.print();
+    EarleyParser EP;
+    EP.setGrammar("grammar.txt");
+    EP.printGrammar();
+    EP.setText();
+    EP.printChart();
+
     
     return 0;
 }
