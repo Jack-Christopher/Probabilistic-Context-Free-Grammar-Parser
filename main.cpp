@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include "token.h"
+#include "state.h"
 #include "production.h"
 #include "grammar.h"
 #include "chart.h"
@@ -13,8 +14,7 @@ int main()
     EP.setGrammar("grammar.txt");
     EP.printGrammar();
     EP.setText();
-    EP.printChart();
+    //EP.printChart();
 
-    
     return 0;
 }
