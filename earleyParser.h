@@ -8,6 +8,9 @@ private:
 public:
     EarleyParser() = default;
     EarleyParser(Grammar g, std::string text);
+    void PREDICTOR(State s, int idx, Grammar g);
+    void SCANNER(State s, int idx, std::vector<std::string> w);
+    void COMPLETER(State s, int idx,);
     void setGrammar(std::string fileName);
     void setWords();
     void setChart(int n);
@@ -21,6 +24,7 @@ EarleyParser::EarleyParser(Grammar g, std::string text)
 {
     this->grammar = g;
     this->text = text;
+    //dummy start state
 }
 
 void EarleyParser::setGrammar(std::string fileName)
