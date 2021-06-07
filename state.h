@@ -6,8 +6,8 @@ private:
     std::vector<Token> rightSide;
     int pointIdx;
     // [idx1, idx2]
-    int indx1;
-    int indx2;
+    int idx1;
+    int idx2;
     float probability;
 
 public:
@@ -21,6 +21,11 @@ public:
     void setPointIdx(int pointIdx);
     std::string toString();
     bool isIncomplete();
+    int getIdx1();
+    int getIdx2();
+    void setIdx1(int idx);
+    void setIdx2(int idx);
+    void move();
     Token nextElement();
     ~State();
 };
@@ -92,12 +97,41 @@ bool State::isIncomplete()
     return true;
 }
 
+int State::getIdx1()
+{
+    return idx1;
+}
+
+int State::getIdx2()
+{
+    return idx2;
+}
+
+void State::setIdx1(int idx)
+{
+    this->idx1 = idx;
+}
+
+void State::setIdx2(int idx)
+{
+    this->idx2 = idx;
+}
+
 Token State::nextElement()
 {
     Token t;
     if ( rightSide[pointIdx].getType() == Point )
         t = rightSide[pointIdx+1];
     return t;    
+}
+
+void State::move()
+{
+    // representa el hecho de un swap de un elemento con su siguiente en el State
+    // simula: "el punto avanza"
+    Token temp = rightSide[pointIdx];
+    rightSide[pointIdx] = rightSide[pointIdx+1];
+    rightSide[pointIdx+1] = temp;
 }
 
 State::~State()
