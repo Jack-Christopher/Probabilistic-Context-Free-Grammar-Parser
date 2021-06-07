@@ -8,9 +8,9 @@ private:
 public:
     EarleyParser() = default;
     EarleyParser(Grammar g, std::string text);
-    void PREDICTOR(State s, int idx, Grammar g);
-    void SCANNER(State s, int idx, std::vector<std::string> w);
-    void COMPLETER(State s, int idx,);
+    void PREDICTOR(State s);
+    void SCANNER(State s);
+    void COMPLETER(State s, int idx); // Aun en elaboracion
     void setGrammar(std::string fileName);
     void setWords();
     void setChart(int n);
@@ -25,6 +25,39 @@ EarleyParser::EarleyParser(Grammar g, std::string text)
     this->grammar = g;
     this->text = text;
     //dummy start state
+}
+
+void EarleyParser::PREDICTOR(State s)
+{
+    int j = s.getIdx2();
+    Token t = s.nextElement();
+    std::vector<Production> prods = grammar.getProductions();
+    State temp;
+    for (int k = 0; k < prods.size(); k++)
+    {
+        if ((prods[k].getLeftSide().getValue() == t.getValue()) && (prods[k].getLeftSide().getType() == t.getType()))
+        {
+            temp = prods[k].convertToState(0);
+            temp.setIdx1(j);
+            temp.setIdx2(j);
+            chart.getContent()[j].push_back(temp);
+        }
+    }
+}
+
+void EarleyParser::SCANNER(State s)
+{
+    State temp = s;
+    int j = temp.getIdx2();
+    Token t = temp.nextElement();
+    std::vector<Production> prods = grammar.getProductions();
+    if (t.getType() ==  Terminal)
+    {
+        temp.move();
+        temp.setIdx1(j);
+        temp.setIdx2(j+1);
+        chart.getContent()[j+1].push_back(temp);
+    }
 }
 
 void EarleyParser::setGrammar(std::string fileName)
