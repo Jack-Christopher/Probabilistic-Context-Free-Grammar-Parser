@@ -4,10 +4,12 @@ class Production
 private:
     Token leftSide;
     std::vector<Token> rightSide;
+    float probability;
 
 public:
     Production() = default;
     Production(Token leftSide, std::vector<Token> rightSide);
+    Production(Token leftSide, std::vector<Token> rightSide, float probability);
     Token getLeftSide();
     std::vector<Token> getRightSide();
     void setLeftSide(Token LeftSide);
@@ -17,6 +19,7 @@ public:
     std::vector<Token> readRightSide(std::string &production, int &index, int end);
     std::vector<std::vector<Token>> readRightSideHelper(std::string &production, int &index);
     std::string toString();
+    State convertToState(int idx);
     ~Production();
 };
 
@@ -24,6 +27,13 @@ Production::Production(Token leftSide, std::vector<Token> rightSide)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
+}
+
+Production::Production(Token leftSide, std::vector<Token> rightSide, float probability)
+{
+    this->leftSide = leftSide;
+    this->rightSide = rightSide;
+    this->probability = probability;
 }
 
 Token Production::getLeftSide()
@@ -126,6 +136,19 @@ std::string Production::toString()
     }
     temp += "]   ";
     return temp;
+}
+
+State Production::convertToState(int idx)
+{
+    State s;
+    s.setLeftSide(this->leftSide);
+    Token t;
+    t.setValues("", Point);
+    std::vector<Token> temp = rightSide;
+    temp.insert(rightSide.begin() +idx, t);
+    s.setRightSide(temp);
+    s.setPointIdx(idx);
+    return s;
 }
 
 Production::~Production()
