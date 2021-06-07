@@ -7,8 +7,8 @@ public:
     Chart() = default;
     void setUpChart(int n);
     void setContent(std::vector<std::string> text);
+    std::vector<std::vector<State>> getContent();
     std::string toText();
-    void swap(int Chart_i, int idx);
     ~Chart();
 };
 
@@ -24,6 +24,11 @@ void Chart::setContent(std::vector<std::string> text)
     return;
 }
 
+std::vector<std::vector<State>> Chart::getContent()
+{
+    return content;
+}
+
 std::string Chart::toText()
 {
     std::string temp = "";
@@ -37,16 +42,6 @@ std::string Chart::toText()
         }
     }
     return temp;
-}
-
-void Chart::swap(int Chart_i, int idx)
-{
-    // representa el hecho de un swap de un elemento con su siguiente en la lista i-esima del chart
-    // simula: "el punto avanza"
-    State temp = content[Chart_i][idx];
-    content[Chart_i][idx] = content[Chart_i][idx+1];
-    content[Chart_i][idx+1] = temp;
-
 }
 
 Chart::~Chart()
