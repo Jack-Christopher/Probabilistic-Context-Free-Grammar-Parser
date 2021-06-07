@@ -2,11 +2,13 @@
 #include <vector>
 #include <fstream>
 #include "token.h"
+#include "extra.h"
 #include "state.h"
 #include "production.h"
 #include "grammar.h"
 #include "chart.h"
 #include "earleyParser.h"
+
 
 int main()
 {
