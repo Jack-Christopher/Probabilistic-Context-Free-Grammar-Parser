@@ -21,6 +21,8 @@ public:
     std::string getValue();
     void setValues(std::string value, Type type);
     std::vector<Token> readToken(std::string &text, int start, int end);
+    bool operator ==(const Token &t) const;
+
     ~Token();
 };
 Token::Token()
@@ -89,6 +91,13 @@ std::vector<Token> Token::readToken(std::string &text, int start, int end)
         }
     }
     return tokenList;
+}
+
+bool Token::operator ==(const Token &t) const
+{
+    if ((this->type == t.type) && (this->value == t.value))
+        return true;
+    return false;
 }
 
 Token::~Token()
