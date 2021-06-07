@@ -3,6 +3,7 @@ enum Type
     Terminal,
     NonTerminal,
     Inicial,
+    Point,
     NullType
 };
 
