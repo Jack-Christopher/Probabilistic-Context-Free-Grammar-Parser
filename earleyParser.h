@@ -115,6 +115,7 @@ void EarleyParser::COMPLETER(State s) // indices [j, k]
     }
 }
 
+
 void EarleyParser::setGrammar(std::string fileName)
 {
     this->grammar.readGrammarFromTXT(fileName);
