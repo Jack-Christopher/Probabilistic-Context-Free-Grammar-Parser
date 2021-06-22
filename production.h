@@ -2,56 +2,57 @@
 class Production
 {
 private:
-    Token leftSide;
-    std::vector<Token> rightSide;
+    Nodo leftSide;
+    std::vector<Nodo> rightSide;
     float probability;
 
 public:
     Production() = default;
-    Production(Token leftSide, std::vector<Token> rightSide);
-    Production(Token leftSide, std::vector<Token> rightSide, float probability);
-    Token getLeftSide();
-    std::vector<Token> getRightSide();
-    void setLeftSide(Token LeftSide);
-    void setRightSide(std::vector<Token> RightSide);
+    Production(Nodo leftSide, std::vector<Nodo> rightSide);
+    Production(Nodo leftSide, std::vector<Nodo> rightSide, float probability);
+    Nodo getLeftSide();
+    std::vector<Nodo> getRightSide();
+    void setLeftSide(Nodo LeftSide);
+    void setRightSide(std::vector<Nodo> RightSide);
     std::vector<Production> readProduction(std::string production);
     void readLeftSide(std::string &production, int &index);
-    std::vector<Token> readRightSide(std::string &production, int &index, int end);
-    std::vector<std::vector<Token>> readRightSideHelper(std::string &production, int &index);
+    std::vector<Nodo> readRightSide(std::string &production, int &index, int end);    
+    std::vector<std::vector<Nodo>> readRightSideHelper(std::string &production, int &index);
     std::string toString();
     State convertToState(int idx);
+    bool operator ==(const Production &t) const;
     ~Production();
 };
 
-Production::Production(Token leftSide, std::vector<Token> rightSide)
+Production::Production(Nodo leftSide, std::vector<Nodo> rightSide)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
 }
 
-Production::Production(Token leftSide, std::vector<Token> rightSide, float probability)
+Production::Production(Nodo leftSide, std::vector<Nodo> rightSide, float probability)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
     this->probability = probability;
 }
 
-Token Production::getLeftSide()
+Nodo Production::getLeftSide()
 {
     return leftSide;
 }
 
-std::vector<Token> Production::getRightSide()
+std::vector<Nodo> Production::getRightSide()
 {
     return rightSide;
 }
 
-void Production::setLeftSide(Token LeftSide)
+void Production::setLeftSide(Nodo LeftSide)
 {
     this->leftSide = LeftSide;
 }
 
-void Production::setRightSide(std::vector<Token> RightSide)
+void Production::setRightSide(std::vector<Nodo> RightSide)
 {
     this->rightSide = RightSide;
 }
@@ -60,26 +61,27 @@ void Production::readLeftSide(std::string &production, int &index)
 {
     while (index < production.size() && production[index] != ':')
         index++;
-    Token token;
-    if (token.readToken(production, 0, index - 1)[0].getType() == NonTerminal)
+    Nodo Nodo;
+    if (Nodo.readNodo(production, 0, index - 1)[0].getType() == NonTerminal)
     {
-        leftSide = token.readToken(production, 0, index)[0];
+        leftSide = Nodo.readNodo(production, 0, index)[0];
     }
     else
-        std::cout << "Produccion incorrecta\n";
-    index += 3;
+        std::cout << "Produccion incorrecta\n";  
+        
+    index += 3; 
 }
 
-std::vector<Token> Production::readRightSide(std::string &production, int &index, int end)
+std::vector<Nodo> Production::readRightSide(std::string &production, int &index, int end)
 {
-    Token token;
-    std::vector<Token> tokenList = token.readToken(production, index, end);
-    return tokenList;
+    Nodo nodo;
+    std::vector<Nodo> NodoList = nodo.readNodo(production, index, end);
+    return NodoList;
 }
 
-std::vector<std::vector<Token>> Production::readRightSideHelper(std::string &production, int &index)
+std::vector<std::vector<Nodo>> Production::readRightSideHelper(std::string &production, int &index)
 {
-    std::vector<std::vector<Token>> RightSideList;
+    std::vector<std::vector<Nodo>> RightSideList;
     int prevIndex = index;
 
     while (index < production.size())
@@ -102,7 +104,7 @@ std::vector<Production> Production::readProduction(std::string production)
     std::vector<Production> productions;
 
     readLeftSide(production, index);
-    std::vector<std::vector<Token>> tempList = readRightSideHelper(production, index);
+    std::vector<std::vector<Nodo>> tempList = readRightSideHelper(production, index);
 
     Production prod;
     prod.setLeftSide(leftSide);
@@ -142,14 +144,23 @@ State Production::convertToState(int idx)
 {
     State s;
     s.setLeftSide(this->leftSide);
-    Token t;
-    t.setValues("", Point);
-    std::vector<Token> temp = rightSide;
-    temp.insert(rightSide.begin() +idx, t);
+    Nodo t;
+    t.setValues(".", Point);
+    std::vector<Nodo> temp = rightSide;
+    temp.insert(temp.begin() +idx, t);
     s.setRightSide(temp);
     s.setPointIdx(idx);
     return s;
 }
+
+
+bool Production::operator ==(const Production &t) const
+{
+    if (this->rightSide == t.rightSide && this->leftSide == t.leftSide)
+        return true;
+    return false;
+}
+
 
 Production::~Production()
 {
