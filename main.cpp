@@ -9,7 +9,6 @@
 #include "chart.h"
 #include "earleyParser.h"
 
-
 int main()
 {
     EarleyParser EP;
