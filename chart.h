@@ -10,7 +10,6 @@ public:
     ~Chart();
 };
 
-
 void Chart::setUpChart(int n)
 {
     std::vector<State> temp;
@@ -53,3 +52,5 @@ Chart::~Chart()
 {
 
 }
+
+
