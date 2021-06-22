@@ -23,7 +23,8 @@ int main()
         std::cout<< "Cadena aprobada\n\n";
     else
         std::cout<< "Cadena NO aprobada\n\n";
-
+    
+    
     return 0;
 }
 
