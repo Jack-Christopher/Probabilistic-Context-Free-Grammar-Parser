@@ -53,10 +53,6 @@ void EarleyParser::PREDICTOR(State s)
     }
 }
 
-
-
-
-
 /*
 procedure SCANNER((A â†’ â€¦ @ L â€¦, [i, j]))
     if (L â†’ word[j]) is_in grammar
