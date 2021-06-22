@@ -54,11 +54,6 @@ void EarleyParser::PREDICTOR(State s)
 }
 
 
-/* 
-Espacio para el scanner 
-*/ 
-
-
 
 
 
