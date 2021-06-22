@@ -1,34 +1,25 @@
 class Grammar
 {
 private:
+    std::string initial;
     std::vector<Production> productions;
-    std::vector<Token> NonTerminals;
-    std::vector<Token> Terminals;
+    std::vector<Nodo> NonTerminals;
+    std::vector<Nodo> Terminals;
 
 public:
     Grammar() = default;
     Grammar(std::vector<Production> productions);
     void readGrammarFromTXT(std::string fileName);
-    void setElements();
+    void setElements(std::string init);
     std::vector<Production> getProductions();
+    std::string getInitial();
     void print();
-    bool contains();
     ~Grammar();
 };
 
 Grammar::Grammar(std::vector<Production> productions)
 {
     this->productions = productions;
-}
-
-bool Grammar::contains(Token t, std::vector<Token> vector)
-{
-    for (int k = 0; k < vector; k++)
-    {
-        if(vector[k] == t)
-            return true;
-    }
-    return false;
 }
 
 void Grammar::readGrammarFromTXT(std::string fileName)
@@ -38,35 +29,50 @@ void Grammar::readGrammarFromTXT(std::string fileName)
     Production prod;
     while (std::getline(file, tempText))
     {
-        //std::cout << tempText;
         std::vector<Production> tempList = prod.readProduction(tempText);
         for (int k = 0; k < tempList.size(); k++)
         {
             productions.push_back(tempList[k]);
         }
     }
+
+    std::string init;
+    std::cout<< "Ingrese el simbolo inicial:\t";
+    std::cin>> init;
+    std::cin.ignore();
+    setElements(init);
 }
 
-void Grammar::setElements()
+void Grammar::setElements(std::string init)
 {
     for (int k = 0; k < productions.size(); k++)
     {
-        auto temp  = productions[k].getRightSide();
         NonTerminals.push_back(productions[k].getLeftSide());
+        if (productions[k].getLeftSide().getValue() == init)
+            this->initial = init;
+
+        auto temp = productions[k].getRightSide();
         for (int p = 0; p < temp.size(); p++)
         {
-            if ((temp[p].getType() == Terminal) && !contains(temp[t], Terminals))
+            if ((temp[p].getType() == Terminal) && !contains<Nodo>(temp[p], Terminals))
                 Terminals.push_back(temp[p]);
-            else if ((temp[p].getType() == NonTerminal) && !contains(temp[t], NonTerminals))
+            else if ((temp[p].getType() == NonTerminal) && !contains<Nodo>(temp[p], NonTerminals))
                 NonTerminals.push_back(temp[p]);
         }
     }
 }
 
+
 std::vector<Production> Grammar::getProductions()
 {
-    return productions;
+    return this->productions;
 }
+
+std::string Grammar::getInitial()
+{
+    return this->initial;
+}
+
 
 void Grammar::print()
 {
