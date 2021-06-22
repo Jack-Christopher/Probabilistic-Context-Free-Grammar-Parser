@@ -28,9 +28,9 @@ EarleyParser::EarleyParser(Grammar g, std::string text)
 }
 
 /*
-procedure PREDICTOR((A â†’ â€¦ @ B â€¦, [i, j]))
-    for each (B â†’ RHS) in grammar do
-    chart[j].pushback(B â†’ @ RHS, [j, j]) 
+procedure PREDICTOR((A -> ...  @ B  ..., [i, j]))
+    for each (B -> RHS) in grammar do
+    chart[j].pushback(B -> @ RHS, [j, j]) 
 */
 
 void EarleyParser::PREDICTOR(State s)
@@ -54,9 +54,9 @@ void EarleyParser::PREDICTOR(State s)
 }
 
 /*
-procedure SCANNER((A â†’ â€¦ @ L â€¦, [i, j]))
-    if (L â†’ word[j]) is_in grammar
-    chart[j + 1].pushback(L â†’ ...word[j] @ ..., [j, j + 1])
+procedure SCANNER((A -> ...  @ L  ..., [i, j]))
+    if (L -> word[j]) is_in grammar
+    chart[j + 1].pushback(L -> ... word[j] @  ..., [j, j + 1])
 */
 
 
@@ -86,11 +86,9 @@ void EarleyParser::SCANNER(State s) // indices [i, j]
 
 
 /*
-procedure COMPLETER((B â†’ â€¦ @, [j, k]))
-    foreach state in chart[j] :
-        if state LIKE (A â†’ â€¦ @ B â€¦, [i, j])
-            chart[k].pushback(A â†’ â€¦ B @ â€¦, [i, k])
-end
+procedure COMPLETER((B -> ...  @, [j, k]))
+    for each (A -> ...  @ B ..., [i, j]) in chart[j] do
+        ADDTOCHART((A -> ...  B @ ..., [i, k]), chart[k])
 */
 
 void EarleyParser::COMPLETER(State s) // indices [j, k]
@@ -194,12 +192,9 @@ bool EarleyParser::process()
          }
     }
     
-    std::vector<Nodo> nodos;
-    nodos.push_back(Nodo{grammar.getInitial(), NonTerminal});
-    nodos.push_back(Nodo{".", Point});
-    State Top {Nodo{"TOP", NonTerminal}, nodos};
+    DSS.move();
 
-    if(contains<State>(Top, chart.content[chart.content.size()-1]))
+    if(contains<State>(DSS, chart.content[chart.content.size()-1]))
         return true;
     else
         return false;
