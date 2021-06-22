@@ -1,12 +1,10 @@
 class Chart
 {
-private:
+public:
     std::vector<std::vector<State>> content;
     int chartSize;
-public:
     Chart() = default;
     void setUpChart(int n);
-    void setContent(std::vector<std::string> text);
     std::vector<std::vector<State>> getContent();
     std::string toText();
     ~Chart();
@@ -15,13 +13,10 @@ public:
 
 void Chart::setUpChart(int n)
 {
-    content.reserve(n+1);
+    std::vector<State> temp;
+    for (int k = 0; k <= n; k++)
+        content.push_back(temp);
     chartSize = n+1;
-}
-
-void Chart::setContent(std::vector<std::string> text)
-{
-    return;
 }
 
 std::vector<std::vector<State>> Chart::getContent()
@@ -34,12 +29,22 @@ std::string Chart::toText()
     std::string temp = "";
     for (int k = 0; k < content.size(); k++)
     {
+        temp += "Chart[";
+        temp += std::to_string(k);
+        temp += "]:\n";
+
         for (int p = 0; p < content[k].size(); p++)
         {
+            temp += "\t[";
+            temp += std::to_string(content[k][p].getIdx1());
+            temp += ", ";
+            temp += std::to_string(content[k][p].getIdx2());
+            temp += "]\t";
             temp += " ";
             temp += content[k][p].toString();
-            temp += " ";
+            
         }
+        temp += "\n";
     }
     return temp;
 }
