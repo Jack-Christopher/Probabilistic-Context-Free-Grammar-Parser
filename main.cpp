@@ -1,9 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-#include "token.h"
-#include "extra.h"
+#include "nodo.h"
 #include "state.h"
+#include "extra.h"
 #include "production.h"
 #include "grammar.h"
 #include "chart.h"
@@ -15,8 +15,14 @@ int main()
     EarleyParser EP;
     EP.setGrammar("grammar.txt");
     EP.printGrammar();
-    EP.setText();
-    //EP.printChart();
+    EP.setText(); 
+    bool ACCEPTED = EP.process();
+    EP.printChart();
+
+    if (ACCEPTED)
+        std::cout<< "Cadena aprobada\n\n";
+    else
+        std::cout<< "Cadena NO aprobada\n\n";
 
     return 0;
 }
