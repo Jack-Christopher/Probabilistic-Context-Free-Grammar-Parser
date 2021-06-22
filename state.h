@@ -2,8 +2,8 @@
 class State
 {
 private:
-    Token leftSide;
-    std::vector<Token> rightSide;
+    Nodo leftSide;
+    std::vector<Nodo> rightSide;
     int pointIdx;
     // [idx1, idx2]
     int idx1;
@@ -12,53 +12,65 @@ private:
 
 public:
     State() = default;
-    State(Token leftSide, std::vector<Token> rightSide);
-    State(Token leftSide, std::vector<Token> rightSide, float probability);
-    Token getLeftSide();
-    std::vector<Token> getRightSide();
-    void setLeftSide(Token LeftSide);
-    void setRightSide(std::vector<Token> RightSide);
+    State(Nodo leftSide, std::vector<Nodo> rightSide);
+    State(Nodo leftSide, std::vector<Nodo> rightSide, int pointIdx);
+    State(Nodo leftSide, std::vector<Nodo> rightSide, float probability);
+    Nodo getLeftSide();
+    std::vector<Nodo> getRightSide();
+    void setLeftSide(Nodo LeftSide);
+    void setRightSide(std::vector<Nodo> RightSide);
     void setPointIdx(int pointIdx);
-    std::string toString();
-    bool isIncomplete();
     int getIdx1();
     int getIdx2();
     void setIdx1(int idx);
     void setIdx2(int idx);
+    std::string toString();
+    int getPointIdx();
+
+    bool isIncomplete();
     void move();
-    Token nextElement();
+    Nodo nextElement();
+    bool operator ==(const State &t) const;
     ~State();
 };
 
-State::State(Token leftSide, std::vector<Token> rightSide)
+State::State(Nodo leftSide, std::vector<Nodo> rightSide)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
 }
 
-State::State(Token leftSide, std::vector<Token> rightSide, float probability)
+State::State(Nodo leftSide, std::vector<Nodo> rightSide, float probability)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
     this->probability = probability;
 }
 
-Token State::getLeftSide()
+State::State(Nodo leftSide, std::vector<Nodo> rightSide, int pointIdx)
+{
+    this->leftSide = leftSide;
+    this->rightSide = rightSide;
+    Nodo P {".", Point};
+    this->rightSide.insert(this->rightSide.begin() + pointIdx, P);
+}
+
+Nodo State::getLeftSide()
 {
     return leftSide;
 }
 
-std::vector<Token> State::getRightSide()
+std::vector<Nodo> State::getRightSide()
 {
     return rightSide;
 }
 
-void State::setLeftSide(Token LeftSide)
+void State::setLeftSide(Nodo LeftSide)
 {
     this->leftSide = LeftSide;
 }
 
-void State::setRightSide(std::vector<Token> RightSide)
+void State::setRightSide(std::vector<Nodo> RightSide)
 {
     this->rightSide = RightSide;
 }
@@ -68,12 +80,13 @@ void State::setPointIdx(int pointIdx)
     this->pointIdx = pointIdx;
 }
 
+
 std::string State::toString()
 {
     std::string temp = "";
     temp += "[";
     temp += leftSide.getValue();
-    temp += "] --> [  ";
+    temp += "] --> [ ";
     for (int k = 0; k < rightSide.size(); k++)
     {
         if (rightSide[k].getType() == Terminal)
@@ -84,15 +97,16 @@ std::string State::toString()
         }
         else if (rightSide[k].getType() != NullType)
             temp += rightSide[k].getValue();
-        temp += "  ";
+        temp += " ";
     }
-    temp += "]   ";
+    temp += "]\n";
     return temp;
 }
 
 bool State::isIncomplete()
 {
-    if ((pointIdx == rightSide.size() -1) && (rightSide[pointIdx].getType() == Point ))
+    // SI EL PUNTO ESTA AL FINAL
+    if ((pointIdx == rightSide.size() - 1) && (rightSide[pointIdx].getType() == Point))
         return false;
     return true;
 }
@@ -117,22 +131,36 @@ void State::setIdx2(int idx)
     this->idx2 = idx;
 }
 
-Token State::nextElement()
+int State::getPointIdx()
 {
-    Token t;
-    if ( rightSide[pointIdx].getType() == Point )
-        t = rightSide[pointIdx+1];
-    return t;    
+    return this->pointIdx;
+}
+
+Nodo State::nextElement()
+{
+    Nodo t;
+    if (rightSide[pointIdx].getType() == Point)
+        t = rightSide[pointIdx + 1];
+    return t;
 }
 
 void State::move()
 {
     // representa el hecho de un swap de un elemento con su siguiente en el State
     // simula: "el punto avanza"
-    Token temp = rightSide[pointIdx];
-    rightSide[pointIdx] = rightSide[pointIdx+1];
-    rightSide[pointIdx+1] = temp;
+    Nodo temp = rightSide[pointIdx];
+    rightSide[pointIdx] = rightSide[pointIdx + 1];
+    rightSide[pointIdx + 1] = temp;
+    pointIdx++;
 }
+
+bool State::operator ==(const State &t) const
+{
+    if (this->rightSide == t.rightSide && this->leftSide == t.leftSide)
+        return true;
+    return false;
+}
+
 
 State::~State()
 {
