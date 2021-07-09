@@ -13,6 +13,7 @@ public:
     Nodo getLeftSide();
     std::vector<Nodo> getRightSide();
     void setLeftSide(Nodo LeftSide);
+    void setProbability(float probability);
     void setRightSide(std::vector<Nodo> RightSide);
     std::vector<Production> readProduction(std::string production);
     void readLeftSide(std::string &production, int &index);
@@ -50,6 +51,11 @@ std::vector<Nodo> Production::getRightSide()
 void Production::setLeftSide(Nodo LeftSide)
 {
     this->leftSide = LeftSide;
+}
+
+void Production::setProbability(float probability)
+{
+    this->probability = probability;
 }
 
 void Production::setRightSide(std::vector<Nodo> RightSide)
