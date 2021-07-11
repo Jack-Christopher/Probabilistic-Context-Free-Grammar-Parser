@@ -1,9 +1,16 @@
+struct Group
+{
+    std::string commonLeftSide;
+    std::vector<int> commonProductions;
+};
+
 class Grammar
 {
 private:
     std::string initial;
     std::vector<Production> productions;
     std::vector<Nodo> NonTerminals;
+    std::vector<Group> indice;
     std::vector<Nodo> Terminals;
 
 public:
@@ -14,6 +21,7 @@ public:
     std::vector<Production> getProductions();
     std::string getInitial();
     void print();
+    void setIndice();
     ~Grammar();
 };
 
@@ -41,6 +49,7 @@ void Grammar::readGrammarFromTXT(std::string fileName)
     std::cin>> init;
     std::cin.ignore();
     setElements(init);
+    setIndice();
 }
 
 void Grammar::setElements(std::string init)
@@ -62,6 +71,34 @@ void Grammar::setElements(std::string init)
     }
 }
 
+void Grammar::setIndice()
+{
+    bool visitedProductions[productions.size()];
+    std::memset(visitedProductions, false, productions.size());
+    Group tempGroup;
+
+    for (int k = 0; k < productions.size(); k++)
+    {
+        if (!visitedProductions[k])
+        {
+            visitedProductions[k] = true;
+            tempGroup.commonLeftSide = productions[k].getLeftSide().getValue();
+            tempGroup.commonProductions.push_back(k);
+
+            for (int p = 0; p < productions.size(); p++)
+            {
+                if ( productions[k].getLeftSide().getValue() == productions[p].getLeftSide().getValue() &&
+                    (!visitedProductions[p] && p != k))
+                {
+                    visitedProductions[p] = true;
+                    tempGroup.commonProductions.push_back(p);
+                }
+            }
+            indice.push_back(tempGroup);
+            tempGroup.commonProductions.clear();
+        }
+    }
+}
 
 std::vector<Production> Grammar::getProductions()
 {
@@ -87,4 +124,11 @@ void Grammar::print()
 
 Grammar::~Grammar()
 {
+    std::cout<< "INDICE:"<<"("<< indice.size()<<")"<<"\n";
+    for (int k = 0; k < indice.size(); k++)
+    {
+        std::cout<< indice[k].commonLeftSide<<":\n";
+        for (int p = 0; p < indice[k].commonProductions.size(); p++)
+            std::cout<< "\t" <<productions[indice[k].commonProductions[p]].toString()<<"\n";
+    }
 }
