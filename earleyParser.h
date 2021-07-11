@@ -173,6 +173,10 @@ void EarleyParser::printChart()
 // Main Function
 bool EarleyParser::process()
 {
+    //se muestra los indices
+    this->grammar.showIndice();
+    std::cout<<"\n";
+
     //add dummy start state
     State DSS = dummyStartState(this->grammar.getInitial());
     chart.content[0].push_back(DSS);
