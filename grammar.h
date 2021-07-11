@@ -22,6 +22,7 @@ public:
     std::string getInitial();
     void print();
     void setIndice();
+    void showIndice();
     ~Grammar();
 };
 
@@ -122,7 +123,8 @@ void Grammar::print()
     std::cout << "\n-------------------------------------\n";
 }
 
-Grammar::~Grammar()
+
+void Grammar::showIndice()
 {
     std::cout<< "INDICE:"<<"("<< indice.size()<<")"<<"\n";
     for (int k = 0; k < indice.size(); k++)
@@ -131,4 +133,8 @@ Grammar::~Grammar()
         for (int p = 0; p < indice[k].commonProductions.size(); p++)
             std::cout<< "\t" <<productions[indice[k].commonProductions[p]].toString()<<"\n";
     }
+}
+
+Grammar::~Grammar()
+{
 }
