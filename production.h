@@ -1,4 +1,3 @@
-
 class Production
 {
 private:
@@ -23,6 +22,8 @@ public:
     State convertToState(int idx);
     bool operator ==(const Production &t) const;
     ~Production();
+
+    friend class EarleyParser;
 };
 
 Production::Production(Nodo leftSide, std::vector<Nodo> rightSide)
