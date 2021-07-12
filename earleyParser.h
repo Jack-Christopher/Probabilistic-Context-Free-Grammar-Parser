@@ -18,6 +18,7 @@ public:
     void printChart();
     void printGrammar();
     bool process();
+    void setProbabilities();
     ~EarleyParser();
 };
 
@@ -121,6 +122,7 @@ void EarleyParser::setGrammar(std::string fileName)
     this->grammar.readGrammarFromTXT(fileName);
 }
 
+//Se tokeniza la entrada
 void EarleyParser::setWords()
 {
     std::string temp = "";
@@ -144,12 +146,14 @@ void EarleyParser::setWords()
     }
 }
 
+//Se setea el chart
 void EarleyParser::setChart(int n)
 {
     chart.setUpChart(n);
     //chart.setContent(this->words);
 }
 
+//Se lee una cadena para analizarla
 void EarleyParser::setText() 
 {
     std::cout<< "\nIngrese una cadena para analizarla:\t";
@@ -170,7 +174,7 @@ void EarleyParser::printChart()
 }
 
 
-// Main Function
+//Se procesa la cadenade acuerdo al algoritmo de Earley
 bool EarleyParser::process()
 {
     //se muestra los indices
@@ -205,7 +209,15 @@ bool EarleyParser::process()
         return false;
 }
 
-
+//Se setean las probabilidades de forma manual
+void EarleyParser::setProbabilities()
+{
+    for(int i=0; i<grammar.productions.size(); i++)
+    {
+        std::cout<<grammar.productions[i].toString()<<std::endl;
+        std::cout<<"Ingrese la probabilidad de la produccion: "; std::cin>>grammar.productions[i].probability;
+    }
+}
 
 EarleyParser::~EarleyParser()
 {
