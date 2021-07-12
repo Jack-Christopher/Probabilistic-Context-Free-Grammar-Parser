@@ -1,3 +1,5 @@
+#include <cstring>
+
 struct Group
 {
     std::string commonLeftSide;
@@ -24,6 +26,8 @@ public:
     void setIndice();
     void showIndice();
     ~Grammar();
+
+    friend class EarleyParser;
 };
 
 Grammar::Grammar(std::vector<Production> productions)
@@ -138,3 +142,5 @@ void Grammar::showIndice()
 Grammar::~Grammar()
 {
 }
+
+
