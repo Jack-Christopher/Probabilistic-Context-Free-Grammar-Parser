@@ -1,11 +1,7 @@
 <S> ::= <NP> <VP>
-<NP> ::= <NP> <PP>
-<NP> ::= <Noun>
-<VP> ::= <Verb> <NP>
-<VP> ::= <VP> <PP>
+<NP> ::= <NP> <PP> | <Noun>
+<VP> ::= <Verb> <NP> | <VP> <PP>
 <PP> ::= <Prep> <NP>
-<Noun> ::= "john"
-<Noun> ::= "mary"
-<Noun> ::= "denver"
-<Verb> ::= "called"
+<Noun> ::= "john" | "mary" | "denver"
+<Verb> ::= "called" | "greet"
 <Prep> ::= "from"
