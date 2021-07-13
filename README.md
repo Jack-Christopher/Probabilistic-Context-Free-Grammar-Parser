@@ -13,9 +13,9 @@ The class diagram is shown in the following image so that the structure of the p
 
 
 ## 3. How it works?
-First you have to download the whole project, if you want you can change the grammar.txt file by another one with the same name that contains the grammar you desire in the Backus-Naur Form, each production must be in one separate line, if there are more than one option for a left side, each option must be separated by a space, in the next way:
+First you have to download the whole project, if you want you can change the content of the grammar.txt file with the grammar you desire in the Backus-Naur Form, each production must be in one separate line, if there are more than one option for a left side, each option must be separated by a space, in the next way:
     
-    symbol ::= expression_1 | expression_2 | ... | expression_n\
+    symbol ::= expression_1 | expression_2 | ... | expression_n
  If the expression is a nonterminal it must go between < >\
  If the expression is a terminal it must go between " "
  
