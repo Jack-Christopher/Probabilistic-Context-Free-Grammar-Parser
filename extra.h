@@ -42,6 +42,6 @@ State dummyStartState(std::string S)
     dummyStartState.setIdx1(0);
     dummyStartState.setIdx2(0);
     dummyStartState.setPointIdx(0);
-
+    
     return dummyStartState;
 }
