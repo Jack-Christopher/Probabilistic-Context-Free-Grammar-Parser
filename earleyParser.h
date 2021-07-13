@@ -5,20 +5,22 @@ private:
     std::string text;
     std::vector<std::string> words; 
     Chart chart;
-public:
-    EarleyParser() = default;
-    EarleyParser(Grammar g, std::string text);
     void PREDICTOR(State s);
     void SCANNER(State s);
     void COMPLETER(State s);
-    void setGrammar(std::string fileName);
     void setWords();
+    void orderIndice();
+    double compareByIndex(int index1, int index2);
+public:
+    EarleyParser() = default;
+    EarleyParser(Grammar g, std::string text);
+    void setGrammar(std::string fileName);
     void setChart(int n);
     void setText();
     void printChart();
     void printGrammar();
     bool process();
-    void setProbabilities();
+    void convertToProbabilisiticParser();
     ~EarleyParser();
 };
 
@@ -38,18 +40,22 @@ void EarleyParser::PREDICTOR(State s)
 {
     int j = s.getIdx2();
     Nodo t = s.nextElement();
-    std::vector<Production> prods = grammar.getProductions();
     State temp;
-    for (int k = 0; k < prods.size(); k++)
+
+    for (int k = 0; k < grammar.indice.size(); k++ )
     {
-        if ((prods[k].getLeftSide() == t))
+        if (grammar.indice[k].commonLeftSide == t.getValue())
         {
-            temp = prods[k].convertToState(0);
-            temp.setIdx1(j);
-            temp.setIdx2(j);
+            for (int p = 0; p < grammar.indice[k].commonProductions.size(); p++)
+            {
+                temp = grammar.productions[grammar.indice[k].commonProductions[p]].convertToState(0);
+                temp.setIdx1(j);
+                temp.setIdx2(j);
             
-            if(!contains<State>(temp, chart.content[j]))
-                chart.content[j].push_back(temp);
+                if(!contains<State>(temp, chart.content[j]))
+                    chart.content[j].push_back(temp);
+            }
+            break;
         }
     }
 }
@@ -74,13 +80,19 @@ void EarleyParser::SCANNER(State s) // indices [i, j]
     tempVector.push_back(tempNodo);
     prod.setRightSide(tempVector);
 
-    if ( ( contains<Production>(prod, this->grammar.getProductions()) ) ||
-         (t.getType() ==  Terminal && t.getValue() == words[j] ) )
+    //Buscar producciones con el indice
+    for (int k = 0; k < grammar.indice.size(); k++)
     {
-        temp.move();
-        temp.setIdx1(j);
-        temp.setIdx2(j+1);
-        chart.content[j+1].push_back(temp);
+        if (  t.getType() ==  Terminal && t.getValue() == words[j] ||
+            ( grammar.indice[k].commonLeftSide == t.getValue() && 
+            containsOnIndices<Production>(prod, grammar.productions, grammar.indice[k].commonProductions) )  )
+        {
+            temp.move();
+            temp.setIdx1(j);
+            temp.setIdx2(j+1);
+            chart.content[j+1].push_back(temp);
+            return;
+        }
     }
 }
 
@@ -122,7 +134,6 @@ void EarleyParser::setGrammar(std::string fileName)
     this->grammar.readGrammarFromTXT(fileName);
 }
 
-//Se tokeniza la entrada
 void EarleyParser::setWords()
 {
     std::string temp = "";
@@ -146,16 +157,15 @@ void EarleyParser::setWords()
     }
 }
 
-//Se setea el chart
 void EarleyParser::setChart(int n)
 {
     chart.setUpChart(n);
     //chart.setContent(this->words);
 }
 
-//Se lee una cadena para analizarla
 void EarleyParser::setText() 
 {
+    std::cin.ignore();
     std::cout<< "\nIngrese una cadena para analizarla:\t";
     std::getline(std::cin, this->text);
     setWords();
@@ -174,13 +184,9 @@ void EarleyParser::printChart()
 }
 
 
-//Se procesa la cadenade acuerdo al algoritmo de Earley
+// Main Function
 bool EarleyParser::process()
 {
-    //se muestra los indices
-    this->grammar.showIndice();
-    std::cout<<"\n";
-
     //add dummy start state
     State DSS = dummyStartState(this->grammar.getInitial());
     chart.content[0].push_back(DSS);
@@ -209,15 +215,103 @@ bool EarleyParser::process()
         return false;
 }
 
-//Se setean las probabilidades de forma manual
-void EarleyParser::setProbabilities()
+
+void EarleyParser::convertToProbabilisiticParser()
 {
-    for(int i=0; i<grammar.productions.size(); i++)
+    std::vector<double> tempVector;
+    std::string nonValidProbabilityErrorMessage;
+    std::string nonCorrectSumErrorMessage;
+    int option;
+    for (int k = 0; k < grammar.indice.size(); k++)
     {
-        std::cout<<grammar.productions[i].toString()<<std::endl;
-        std::cout<<"Ingrese la probabilidad de la produccion: "; std::cin>>grammar.productions[i].probability;
+        std::cout<< "\nLeft Side:\t"<<grammar.indice[k].commonLeftSide<<"\n";
+        if (grammar.indice[k].commonProductions.size() > 1)
+        {
+            std::cout<< "Modificar?\t (1) SI \t (2) NO\n";
+            std::cin>> option;
+            nonValidProbabilityErrorMessage = "";
+            nonCorrectSumErrorMessage = "";
+
+            if (option == 1)
+            {
+                double total = 0;
+                double probability = 0;
+                for (int  p = 0; p < grammar.indice[k].commonProductions.size(); p++)
+                {
+                    std::cout<< "Production:\t"<<grammar.productions[grammar.indice[k].commonProductions[p]].toString() <<"\n";
+                    std::cout<< "Nueva Probabilidad?\t";
+                    std::cin>> probability;
+                    if (probability > 1 || probability < 0)
+                    {
+                        nonValidProbabilityErrorMessage = "Probabilidad no valida\n";
+                        break;
+                    }
+                    
+                    tempVector.push_back(probability);
+                    total += probability;
+                }
+
+                if (abs((1-total)*100) > 1)  // diferencia mayor a 0.01
+                    nonCorrectSumErrorMessage = "La suma de las probabilidades no es 1\n";
+            
+                if (nonCorrectSumErrorMessage != "" || nonCorrectSumErrorMessage != "")
+                {
+                    std::cout<< nonValidProbabilityErrorMessage<< nonCorrectSumErrorMessage;
+                    std::cout<< "Ha ocurrido un error, los cambios no fueron hechos\n";
+                }
+                else
+                {
+                    for (int t = 0; t < tempVector.size(); t++)
+                        grammar.productions[grammar.indice[k].commonProductions[t]].setProbability(tempVector[t]);
+                }
+                tempVector.clear();
+            }
+        }
+        else
+        {
+            std::cout<< "No puede modificarse la probabilidad de este nodo No-Terminal ";
+            std::cout<< "porque solo dispone de una sola produccion\n";
+            grammar.productions[grammar.indice[k].commonProductions[0]].setProbability(1);
+        }
+    }
+    orderIndice();
+    //se muestra los indices
+    grammar.showIndice();
+    std::cout<<"\n";
+}
+
+
+void EarleyParser::orderIndice()
+{
+    int tam, key, j;
+    for (int k = 0; k < grammar.indice.size(); k++)
+    {
+        tam = grammar.indice[k].commonProductions.size();
+        if ( tam > 1)
+        {
+            //INSERTION SORT para el indice de acuerdo a las probabilidades
+            for (int i = 1; i < tam; i++)
+            {
+                key = grammar.indice[k].commonProductions[i];
+                j = i - 1;
+
+                while (j >= 0 && compareByIndex(grammar.indice[k].commonProductions[j], key))
+                {
+                    grammar.indice[k].commonProductions[j + 1] = grammar.indice[k].commonProductions[j];
+                    j = j - 1;
+                }
+                grammar.indice[k].commonProductions[j + 1] = key;
+            }           
+        }
     }
 }
+
+
+double EarleyParser::compareByIndex(int index1, int index2)
+{
+    return ( grammar.productions[index1].getProbability() < grammar.productions[index2].getProbability() );
+}
+
 
 EarleyParser::~EarleyParser()
 {
