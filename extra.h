@@ -10,6 +10,18 @@ bool contains(Tipo t, std::vector<Tipo> container)
 }
 
 template <class Tipo>
+bool containsOnIndices(Tipo t, std::vector<Tipo> container, std::vector<int> positions)
+{
+    for (int k = 0; k < positions.size(); k++)
+    {
+        if (container[positions[k]] == t)
+            return true;
+    }
+    return false;
+}
+
+
+template <class Tipo>
 void print(std::vector<Tipo> container)
 {
     for (int k = 0; k < container.size(); k++)
@@ -32,10 +44,4 @@ State dummyStartState(std::string S)
     dummyStartState.setPointIdx(0);
 
     return dummyStartState;
-}
-
-
-//To be implemented
-void setProbability(){
-	
 }
