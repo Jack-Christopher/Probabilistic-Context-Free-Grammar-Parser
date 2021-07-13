@@ -1,5 +1,3 @@
-#include <cstring>
-
 struct Group
 {
     std::string commonLeftSide;
@@ -10,24 +8,22 @@ class Grammar
 {
 private:
     std::string initial;
-    std::vector<Production> productions;
     std::vector<Nodo> NonTerminals;
-    std::vector<Group> indice;
     std::vector<Nodo> Terminals;
+    void setIndice();
 
 public:
     Grammar() = default;
     Grammar(std::vector<Production> productions);
+    std::vector<Group> indice;
+    std::vector<Production> productions;
     void readGrammarFromTXT(std::string fileName);
     void setElements(std::string init);
     std::vector<Production> getProductions();
     std::string getInitial();
     void print();
-    void setIndice();
     void showIndice();
     ~Grammar();
-
-    friend class EarleyParser;
 };
 
 Grammar::Grammar(std::vector<Production> productions)
@@ -142,5 +138,3 @@ void Grammar::showIndice()
 Grammar::~Grammar()
 {
 }
-
-
