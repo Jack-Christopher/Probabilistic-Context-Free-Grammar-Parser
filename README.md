@@ -7,6 +7,8 @@ A probability will be assigned to every production of the grammar in order to ac
 
 ## 2. Class Diagram
 The class diagram is shown in the following image so that the structure of the project can be better understood
+
+
 ![Class diagram](https://github.com/Jack-Christopher/ADA-Project/blob/master/image.png)
 
 
