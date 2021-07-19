@@ -2,6 +2,6 @@
 <NP> ::= <NP> <PP> | <Noun>
 <VP> ::= <Verb> <NP> | <VP> <PP>
 <PP> ::= <Prep> <NP>
-<Noun> ::= "john" | "mary" | "denver"
-<Verb> ::= "called" | "greet"
-<Prep> ::= "from"
+<Noun> ::= "john" | "mary" | "rodrigo" | "jack" | "denver" | "arequipa" | "dog"
+<Verb> ::= "called" | "greet" | "met" | "saw"
+<Prep> ::= "from" | "of"
