@@ -32,6 +32,8 @@ public:
     Nodo nextElement();
     bool operator ==(const State &t) const;
     ~State();
+
+    friend class EarleyParser;
 };
 
 State::State(Nodo leftSide, std::vector<Nodo> rightSide)

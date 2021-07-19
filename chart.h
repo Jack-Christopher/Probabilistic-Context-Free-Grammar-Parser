@@ -10,8 +10,10 @@ public:
     ~Chart();
 };
 
+
 void Chart::setUpChart(int n)
 {
+    content.clear();
     std::vector<State> temp;
     for (int k = 0; k <= n; k++)
         content.push_back(temp);
@@ -52,5 +54,3 @@ Chart::~Chart()
 {
 
 }
-
-
