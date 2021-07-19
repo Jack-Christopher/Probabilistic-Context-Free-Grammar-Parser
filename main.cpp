@@ -13,18 +13,29 @@
 
 int main()
 {
+
+    int n;
+
     EarleyParser EP;
     EP.setGrammar("grammar.txt");
     EP.printGrammar();
-    EP.convertToProbabilisiticParser();
-    EP.setText(); 
-    bool ACCEPTED = EP.process();
-    EP.printChart();
+    EP.showGrammarIndice();
 
-    if (ACCEPTED)
-        std::cout<< "Cadena aprobada\n\n";
-    else
-        std::cout<< "Cadena NO aprobada\n\n";
+    std::cout<<"Ingrese la cantidad de cadenas que quiera analizar: ";std::cin>>n;
+    
+    for(int i=0; i<n; i++)
+    {
+        EP.setText();
+        bool ACCEPTED = EP.process();
+        EP.printChart();
+        if (ACCEPTED)
+            std::cout<< "Cadena aprobada\n\n";
+        else
+            std::cout<< "Cadena NO aprobada\n\n";
+        
+        EP.setProbabilitiesByGrammarInduction();
+        EP.showGrammarIndice();
+    }
 
     return 0;
 }
