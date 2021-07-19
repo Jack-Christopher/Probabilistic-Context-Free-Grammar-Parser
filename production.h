@@ -1,9 +1,11 @@
+
 class Production
 {
 private:
     Nodo leftSide;
     std::vector<Nodo> rightSide;
-    float probability;
+    double probability;
+    std::vector<std::vector<Nodo>> readRightSideHelper(std::string &production, int &index);
 
 public:
     Production() = default;
@@ -13,23 +15,22 @@ public:
     std::vector<Nodo> getRightSide();
     void setLeftSide(Nodo LeftSide);
     void setProbability(float probability);
+    double getProbability();
     void setRightSide(std::vector<Nodo> RightSide);
     std::vector<Production> readProduction(std::string production);
     void readLeftSide(std::string &production, int &index);
     std::vector<Nodo> readRightSide(std::string &production, int &index, int end);    
-    std::vector<std::vector<Nodo>> readRightSideHelper(std::string &production, int &index);
     std::string toString();
     State convertToState(int idx);
     bool operator ==(const Production &t) const;
     ~Production();
-
-    friend class EarleyParser;
 };
 
 Production::Production(Nodo leftSide, std::vector<Nodo> rightSide)
 {
     this->leftSide = leftSide;
     this->rightSide = rightSide;
+    this->probability = 0;
 }
 
 Production::Production(Nodo leftSide, std::vector<Nodo> rightSide, float probability)
@@ -57,6 +58,11 @@ void Production::setLeftSide(Nodo LeftSide)
 void Production::setProbability(float probability)
 {
     this->probability = probability;
+}
+
+double Production::getProbability()
+{
+    return this->probability;
 }
 
 void Production::setRightSide(std::vector<Nodo> RightSide)
@@ -143,7 +149,9 @@ std::string Production::toString()
             temp += rightSide[k].getValue();
         temp += "  ";
     }
-    temp += "]   ";
+    temp += "]     \t";
+    temp += "Probability:\t";
+    temp += std::to_string(this->probability);
     return temp;
 }
 
