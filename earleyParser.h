@@ -80,22 +80,20 @@ void EarleyParser::SCANNER(State s) // indices [i, j]
     tempVector.push_back(tempNodo);
     prod.setRightSide(tempVector);
 
-    //Buscar producciones con el indice
-    for (int k = 0; k < grammar.indice.size(); k++)
+    if ( ( contains<Production>(prod, this->grammar.getProductions()) ) ||
+         (t.getType() ==  Terminal && t.getValue() == words[j] ) )
     {
-        if (  t.getType() ==  Terminal && t.getValue() == words[j] ||
-            ( grammar.indice[k].commonLeftSide == t.getValue() && 
-            containsOnIndices<Production>(prod, grammar.productions, grammar.indice[k].commonProductions) )  )
-        {
-            temp.move();
-            temp.setIdx1(j);
-            temp.setIdx2(j+1);
-            chart.content[j+1].push_back(temp);
-            return;
-        }
+        temp.move();
+        temp.setIdx1(j);
+        temp.setIdx2(j+1);
+        chart.content[j+1].push_back(temp);
+
+        //Se añade +1  la incidencia a la producción
+        int a = getLSsearchingProductionOnIndice(temp, grammar);
+        int b = getRSsearchingProductionOnIndice(prod, grammar, a);
+        grammar.indice[a].incidents[b] ++;
     }
 }
-
 
 
 /*
@@ -121,8 +119,20 @@ void EarleyParser::COMPLETER(State s) // indices [j, k]
             {
                 eachState.move();
                 eachState.setIdx2(s.getIdx2());
-                if ( !contains<State> (eachState, chart.content[s.getIdx2()]) )
+                if ( !contains<State> (eachState, chart.content[s.getIdx2()]) ){
+                    //std::cout<<eachState.toString()<<std::endl;
                     chart.content[s.getIdx2()].push_back(eachState);
+
+                    //Se añade 1 incidencia a la produccion
+                    int a = getLSsearchingProductionOnIndice(eachState, grammar);
+                    if(a != -1){
+                        Production aux = toProduction(eachState);
+                        int b = getRSsearchingProductionOnIndice(aux,grammar,a);
+                        if(b!= -1){
+                            grammar.indice[a].incidents[b] ++;
+                        }
+                    }
+                }
             }
         }
     }
@@ -283,7 +293,7 @@ void EarleyParser::convertToProbabilisiticParser()
 
 void EarleyParser::orderIndice()
 {
-    int tam, key, j;
+    int tam, key, key2, j;
     for (int k = 0; k < grammar.indice.size(); k++)
     {
         tam = grammar.indice[k].commonProductions.size();
@@ -293,14 +303,17 @@ void EarleyParser::orderIndice()
             for (int i = 1; i < tam; i++)
             {
                 key = grammar.indice[k].commonProductions[i];
+                key2 = grammar.indice[k].incidents[i];
                 j = i - 1;
 
                 while (j >= 0 && compareByIndex(grammar.indice[k].commonProductions[j], key))
                 {
                     grammar.indice[k].commonProductions[j + 1] = grammar.indice[k].commonProductions[j];
+                    grammar.indice[k].incidents[j+1] = grammar.indice[k].incidents[j];
                     j = j - 1;
                 }
                 grammar.indice[k].commonProductions[j + 1] = key;
+                grammar.indice[k].incidents[j+1] = key2;
             }           
         }
     }
