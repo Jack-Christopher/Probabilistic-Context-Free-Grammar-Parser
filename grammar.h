@@ -2,6 +2,7 @@ struct Group
 {
     std::string commonLeftSide;
     std::vector<int> commonProductions;
+    std::vector<int> incidents;
 };
 
 class Grammar
@@ -99,6 +100,13 @@ void Grammar::setIndice()
             tempGroup.commonProductions.clear();
         }
     }
+
+    //Set incidencias a 0
+    for(int i=0; i<indice.size(); i++){
+        for(int j=0; j<indice[i].commonProductions.size(); j++){
+            indice[i].incidents.push_back(0);
+        }
+    }
 }
 
 std::vector<Production> Grammar::getProductions()
@@ -130,8 +138,10 @@ void Grammar::showIndice()
     for (int k = 0; k < indice.size(); k++)
     {
         std::cout<< indice[k].commonLeftSide<<":\n";
-        for (int p = 0; p < indice[k].commonProductions.size(); p++)
+        for (int p = 0; p < indice[k].commonProductions.size(); p++){
             std::cout<< "\t" <<productions[indice[k].commonProductions[p]].toString()<<"\n";
+            std::cout<< "\tIncidents: \t" <<indice[k].incidents[p]<<"\n";
+        }
     }
 }
 
