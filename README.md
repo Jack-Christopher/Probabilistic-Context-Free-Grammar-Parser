@@ -43,7 +43,3 @@ For each nonterminal of the grammar you must choose wheter set its probability.\
 If you accept, you must enter the probability of that that nonterminal node converts into a determined production.\
 The index created will be displayed.\
 Finally, you'll be asked to enter a string to be analyzed by the Probabilistic Parser and the result will be displayed, this is wheter the grammar can produce that string or not.
-
-
-## 4. EXTRA
-(IN PROGRESS)
